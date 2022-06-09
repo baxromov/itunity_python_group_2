@@ -5,4 +5,3 @@ db_config = {
     "PASSWORD": "root",
     "DB_NAME": "itunity"
 }
-

@@ -24,7 +24,6 @@ class MySQLConnection:
             password=self.password,
             database=self.db_name
         )
-        self.cursor = self.cnx.cursor()
 
     def is_connection(self) -> Optional[bool]:
         """
@@ -53,5 +52,28 @@ class MySQLConnection:
         else:
             return None
 
+    def describe_table(self, table_name: str):
+        """
+        Describe table information
+        :param table_name:
+        :return:
+        """
+        cmd = self.cnx.cursor()
+        cmd.execute(f'describe {table_name}')
+        return cmd.description
 
-
+    def create(self, table_name, **kwargs):
+        """
+        Create records on tables
+        :param table_name: table name as staff
+        :param kwargs: fields name
+        :return:
+        """
+        cmd = self.cnx.cursor()
+        before_values = f"insert into {table_name} {tuple(kwargs.keys())} value".replace("'", '`')
+        after_values = f"{tuple(kwargs.values())}"
+        query = f"{before_values} {after_values}"
+        cmd.execute(query)
+        self.cnx.commit()
+        print("Records created !!!")
+        return cmd

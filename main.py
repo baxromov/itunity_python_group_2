@@ -10,3 +10,8 @@ if __name__ == "__main__":
         port=db_config.get('PORT')
     )
     print(mysql.show_table)
+    mysql.create(
+        table_name='course',
+        name="Python",
+        description="Oylik 5000$ topmoqchimisiz",
+    )
