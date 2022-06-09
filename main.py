@@ -9,5 +9,4 @@ if __name__ == "__main__":
         db_name=db_config.get('DB_NAME'),
         port=db_config.get('PORT')
     )
-    for i in mysql.show_table:
-        print(i)
+    print(mysql.show_table)
