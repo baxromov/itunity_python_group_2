@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 class MySQLConnection:
     """
-    MySQL Connection
+        MySQL Connection
     """
 
     def __init__(self,
@@ -35,7 +35,7 @@ class MySQLConnection:
     def connection(self) -> Optional[str]:
         """
         Connection messages
-        :return:
+        :return: str
         """
         return f"Connection has been success!" if self.is_connection() else "failed!"
 
@@ -63,6 +63,7 @@ class MySQLConnection:
         return cmd.description
 
     def create(self, table_name, **kwargs):
+
         """
         Create records on tables
         :param table_name: table name as staff
@@ -77,3 +78,25 @@ class MySQLConnection:
         self.cnx.commit()
         print("Records created !!!")
         return cmd
+
+    def all(self, table_name):
+        cmd = self.cnx.cursor()
+        query = f"select * from {table_name}"
+        cmd.execute(query)
+        return [item for item in cmd]
+
+    def get(self, table_name, **kwargs):
+        cmd = self.cnx.cursor()
+
+        query = f"select * from {table_name} where {tuple(kwargs.keys())[0]}={tuple(kwargs.values())[0]}".replace("'", "")
+        # print(query)
+        cmd.execute(query)
+
+    def update(self):
+        pass
+
+    def delete(self):
+        pass
+
+    def filter(self):
+        pass

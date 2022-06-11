@@ -9,9 +9,9 @@ if __name__ == "__main__":
         db_name=db_config.get('DB_NAME'),
         port=db_config.get('PORT')
     )
-    print(mysql.show_table)
-    mysql.create(
-        table_name='course',
-        name="Python",
-        description="Oylik 5000$ topmoqchimisiz",
-    )
+    data = mysql.all('course')
+    for i in data:
+        print(i)
+    print(data)
+    get_data = mysql.get('course', id=10, name="Python")
+    print(get_data)
