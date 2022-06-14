@@ -79,24 +79,54 @@ class MySQLConnection:
         print("Records created !!!")
         return cmd
 
-    def all(self, table_name):
+    def all(self, table_name) -> list:
         cmd = self.cnx.cursor()
         query = f"select * from {table_name}"
         cmd.execute(query)
         return [item for item in cmd]
 
-    def get(self, table_name, **kwargs):
+    def get(self, table_name, **kwargs) -> Union[tuple, None]:
         cmd = self.cnx.cursor()
+        right_side_query = ''
+        left_side_query = f"select * from {table_name} where "
+        for key, value in kwargs.items():
+            if isinstance(value, int):
+                right_side_query += f"{key}={value} and "
+            else:
+                right_side_query += f"{key}='{value}' and "
 
-        query = f"select * from {table_name} where {tuple(kwargs.keys())[0]}={tuple(kwargs.values())[0]}".replace("'", "")
-        # print(query)
-        cmd.execute(query)
+        result = "and".join(right_side_query.strip().split("and")[:-1])
+        cmd.execute(left_side_query + result)
+        data = cmd.fetchall()
+        if len(data) > 1:
+            raise ValueError("Get more than one objects")
+        else:
+            return data[0] if data else None
+
+    def filter(self, table_name, **kwargs) -> Optional[list]:
+        cmd = self.cnx.cursor()
+        right_side_query = ''
+        left_side_query = f"select * from {table_name} where "
+        for key, value in kwargs.items():
+            if isinstance(value, int):
+                right_side_query += f"{key}={value} and "
+            else:
+                right_side_query += f"{key}='{value}' and "
+
+        result = "and".join(right_side_query.strip().split("and")[:-1])
+        cmd.execute(left_side_query + result)
+        data = cmd.fetchall()
+        return data
+
+    def delete(self, table_name, **kwargs):
+        data = self.get(table_name, **kwargs)[0]
+        data_id = data
+        query = f"delete from {table_name} where id={data_id}"
+        self.cnx.cursor().execute(query)
+        self.cnx.commit()
+        return f"{data_id} is deleted!!!"
 
     def update(self):
         pass
 
-    def delete(self):
-        pass
 
-    def filter(self):
-        pass

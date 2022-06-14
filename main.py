@@ -9,9 +9,8 @@ if __name__ == "__main__":
         db_name=db_config.get('DB_NAME'),
         port=db_config.get('PORT')
     )
-    data = mysql.all('course')
-    for i in data:
-        print(i)
-    print(data)
-    get_data = mysql.get('course', id=10, name="Python")
-    print(get_data)
+
+    # get_data = mysql.get('course', name="Matematika")
+    # print(get_data)
+    # print(mysql.filter('course', name="Python"))
+    print(mysql.delete('course', id=11))
