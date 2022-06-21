@@ -13,5 +13,6 @@ async def start_bot(message):
     await message.reply(message.text)
 
 
-if __name__ == "__main__":
-    executor.start_polling(dp,  skip_updates=True)
+def main():
+    executor.start_polling(dp, skip_updates=True)
+
