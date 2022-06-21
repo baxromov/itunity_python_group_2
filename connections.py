@@ -62,7 +62,7 @@ class MySQLConnection:
         cmd.execute(f'describe {table_name}')
         return cmd.description
 
-    def create(self, table_name, **kwargs):
+    def create(self, table_name: str, **kwargs):
 
         """
         Create records on tables
@@ -79,13 +79,13 @@ class MySQLConnection:
         print("Records created !!!")
         return cmd
 
-    def all(self, table_name) -> list:
+    def all(self, table_name: str) -> Optional[list]:
         cmd = self.cnx.cursor()
         query = f"select * from {table_name}"
         cmd.execute(query)
         return [item for item in cmd]
 
-    def get(self, table_name, **kwargs) -> Union[tuple, None]:
+    def get(self, table_name: str, **kwargs) -> Union[tuple, None]:
         cmd = self.cnx.cursor()
         right_side_query = ''
         left_side_query = f"select * from {table_name} where "
@@ -103,7 +103,7 @@ class MySQLConnection:
         else:
             return data[0] if data else None
 
-    def filter(self, table_name, **kwargs) -> Optional[list]:
+    def filter(self, table_name: str, **kwargs) -> Optional[list]:
         cmd = self.cnx.cursor()
         right_side_query = ''
         left_side_query = f"select * from {table_name} where "
@@ -112,13 +112,12 @@ class MySQLConnection:
                 right_side_query += f"{key}={value} and "
             else:
                 right_side_query += f"{key}='{value}' and "
-
         result = "and".join(right_side_query.strip().split("and")[:-1])
         cmd.execute(left_side_query + result)
         data = cmd.fetchall()
         return data
 
-    def delete(self, table_name, **kwargs):
+    def delete(self, table_name: str, **kwargs) -> Optional[str]:
         data = self.get(table_name, **kwargs)[0]
         data_id = data
         query = f"delete from {table_name} where id={data_id}"
@@ -126,7 +125,18 @@ class MySQLConnection:
         self.cnx.commit()
         return f"{data_id} is deleted!!!"
 
-    def update(self):
-        pass
-
-
+    def update(self, table_name: str, _id: int, **kwargs) -> Optional[tuple]:
+        cmd = self.cnx.cursor()
+        left_side = f"update {table_name} set "
+        middle_side = ""
+        for k, v in kwargs.items():
+            if isinstance(v, int):
+                middle_side += f"{k}={v}, "
+            else:
+                middle_side += f"{k}='{v}', "
+        result = ",".join(middle_side.strip().split(",")[:-1])
+        right_side = f"where id={_id}"
+        cmd.execute(left_side + result + right_side)
+        self.cnx.commit()
+        data = self.get(table_name, id=_id)
+        return data

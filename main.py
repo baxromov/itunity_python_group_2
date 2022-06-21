@@ -10,7 +10,4 @@ if __name__ == "__main__":
         port=db_config.get('PORT')
     )
 
-    # get_data = mysql.get('course', name="Matematika")
-    # print(get_data)
-    # print(mysql.filter('course', name="Python"))
-    print(mysql.delete('course', id=11))
+    print(mysql.update("course", _id=8, name="Ingliz tili", description="60 kunda IELTS 9"))
