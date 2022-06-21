@@ -1,4 +1,4 @@
-from connections import MySQLConnection
+from db import MySQLConnection
 from config import db_config
 
 if __name__ == "__main__":
