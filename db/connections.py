@@ -1,23 +1,20 @@
 from mysql import connector
 from typing import Optional, Union
 
+from config import db_config
+
 
 class MySQLConnection:
     """
         MySQL Connection
     """
 
-    def __init__(self,
-                 host,
-                 port: Optional[None],
-                 user,
-                 password,
-                 db_name):
-        self.host = host
-        self.port = port
-        self.user = user
-        self.password = password
-        self.db_name = db_name
+    def __init__(self):
+        self.host = db_config.get('HOST')
+        self.port = db_config.get('PORT')
+        self.user = db_config.get('USER')
+        self.password = db_config.get('PASSWORD')
+        self.db_name = db_config.get('DB_NAME')
         self.cnx = connector.connect(
             host=self.host,
             user=self.user,
@@ -70,14 +67,23 @@ class MySQLConnection:
         :param kwargs: fields name
         :return:
         """
-        cmd = self.cnx.cursor()
-        before_values = f"insert into {table_name} {tuple(kwargs.keys())} value".replace("'", '`')
-        after_values = f"{tuple(kwargs.values())}"
-        query = f"{before_values} {after_values}"
-        cmd.execute(query)
-        self.cnx.commit()
-        print("Records created !!!")
-        return cmd
+        if len(tuple(kwargs.values())) == 1:
+            cmd = self.cnx.cursor()
+            before_values = f"insert into {table_name} {tuple(kwargs.keys())} value".replace("'", '`')
+            after_values = tuple(kwargs.values())
+            query = f"{before_values} {after_values}".replace(",", "")
+            cmd.execute(query)
+            self.cnx.commit()
+            return cmd
+        else:
+            cmd = self.cnx.cursor()
+            before_values = f"insert into {table_name} {tuple(kwargs.keys())} value".replace("'", '`')
+            after_values = tuple(kwargs.values())
+            query = f"{before_values} {after_values}"
+            cmd.execute(query)
+            self.cnx.commit()
+            print("Records created !!!")
+            return cmd
 
     def all(self, table_name: str) -> Optional[list]:
         cmd = self.cnx.cursor()
