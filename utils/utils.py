@@ -41,13 +41,3 @@ class Validations:
         except Exception as e:
             print(e)
             return False
-
-
-if __name__ == "__main__":
-    # Validate date
-    validator = Validations()
-    print("Mail Validation\n", validator.validate_email("baxromov_shahzodbek@gmail.com"), "\n--------------------")
-    phone = "+998901234567"
-    print("Phone Validation\n", validator.validate_phone_number(phone), "\n--------------------")
-    print(len(phone))
-    print("Date Validation\n", validator.validate_date("20.02.1000"), "\n--------------------")

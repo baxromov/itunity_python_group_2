@@ -146,3 +146,11 @@ class MySQLConnection:
         self.cnx.commit()
         data = self.get(table_name, id=_id)
         return data
+
+    def get_or_create(self, table_name: str, **kwargs) -> Optional[tuple]:
+        data = self.get(table_name, **kwargs)
+        if data:
+            return data, False
+        else:
+            self.create(table_name, **kwargs)
+            return self.get(table_name, **kwargs), True
