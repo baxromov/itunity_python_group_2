@@ -25,7 +25,7 @@ class Validations:
         :param phone_number: string
         :return: boolean
         """
-        rule = r"^\+(998)[0-9]{9}$"
+        rule = r"^\+?(998)[0-9]{9}$"
         return True if re.search(rule, phone_number) else False
 
     @staticmethod
@@ -41,3 +41,8 @@ class Validations:
         except Exception as e:
             print(e)
             return False
+
+
+if __name__ == '__main__':
+    a = Validations()
+    print(a.validate_email("text@text.com"))
